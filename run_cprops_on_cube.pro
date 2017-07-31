@@ -280,7 +280,7 @@ endif
 		    , hdrfile = use_infile+'.fits' $
 		    , idl_file = use_savdir+use_namestr+'_cp2_props'+use_suffixstr+use_iterstr+'.idl' $
 ;		    , text_file = use_savdir+use_namestr+'_cp2_props'+use_suffixstr+'.csv' $
-		    , dist = gstr.dist_mpc $
+		    , dist = 1.e6*gstr.dist_mpc $
 		    , /verbose
     
   endif
