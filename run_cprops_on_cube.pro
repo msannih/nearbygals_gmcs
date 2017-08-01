@@ -77,7 +77,7 @@ for kk=0,use_niter-1 do begin
         use_iterstr='_n'+padinteger(kk,use_pad)
         use_outfile=use_infile+use_iterstr
         
-        add_noise_to_cube, in_file= use_infile+'.fits' $
+        add_noise, in_file= use_infile+'.fits' $
                            , noise=use_addnoise $
                            , out_file=use_outfile+'.fits'
         use_addnoise=use_addnoise[0] ; because realize_noise converts a scalar input to an output cube
