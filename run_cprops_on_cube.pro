@@ -1,5 +1,5 @@
 pro run_cprops_on_cube, datadir=datadir, file=file, savdir=savdir, namestr=namestr $
-                        , galaxy=galaxy, niter=niter, core=core,edge=edge, cleanmask=cleanmask $
+                        , galaxy=galaxy, niter=niter, core=core,edge=edge, cleanmaskfile=cleanmaskfile $
                         , friends=friends,specfriends=specfriends,delta=delta, suffixstr=suffixstr
 
 ; default control flow
@@ -8,7 +8,7 @@ pro run_cprops_on_cube, datadir=datadir, file=file, savdir=savdir, namestr=names
   do_mask = 1
   do_locmax = 1
   do_assign_cp = 1
-  do_clean = 0
+  do_clean = 1
   do_cube2mom = 1
   do_mom2props = 1
 
@@ -212,18 +212,18 @@ for kk=0,use_niter-1 do begin
 		, /idlformat $
 		, /verbose
 
-    use_asgn_cube=use_infile+'_def_asgn'+use_suffixstr+'.fits'
+    use_asgn_cube=use_infile+'_def_asgn'+use_suffixstr
     
   endif
 
 ; REMOVE OBJECTS THAT ARE OUTSDIE THE PAWS CLEAN SUPPORT
 
-  if do_clean gt 0 and keyword_set(cleanmask) then begin
+  if do_clean gt 0 and keyword_set(cleanmaskfile) then begin
 
   ; REMOVE "FAKE POSITIVES", I.E. GMCS WHICH TPEAK IS OUTSIDE THE CLEAN MASK
 
-       cleanmask = readfits(use_datadir+cleanmask+'.fits',hdcln)
-       asgn = readfits(use_asgn_cube, hda)
+       cleanmask = readfits(use_datadir+cleanmaskfile+'.fits',hdcln)
+       asgn = readfits(use_asgn_cube+'.fits', hda)
        data = readfits(use_infile+'.fits',hd)
 
 
@@ -250,9 +250,9 @@ for kk=0,use_niter-1 do begin
           endif
      endfor
 
-        writefits, use_datadir+file+'_def_asgn'+use_suffixstr+'_clean.fits', asgn_cl, hda
+        writefits, use_asgn_cube+'_clean.fits', asgn_cl, hda
         print, max(asgn)-max(asgn_cl), ' GMCs removed'
-        use_asgn_cube=use_datadir+file+'_def_asgn'+use_suffixstr+'_clean.fits'
+        use_asgn_cube=use_asgn_cube+'_clean'
 
 endif
 
@@ -263,7 +263,7 @@ endif
  if do_cube2mom ne 0 then begin
 
     cube_to_moments, infile = use_infile+'.fits' $
-                     , inassign = use_asgn_cube $
+                     , inassign = use_asgn_cube+'.fits' $
                      , hdr = hd $
                      , outfile = use_infile+'_cp2_mom'+use_suffixstr+'.idl' $
 		   , /verbose
@@ -287,13 +287,15 @@ endif
 
 endfor
 
+
+
   dt = systime(1)-t0  
   print, 'Computational time (min): ', dt/60.
   
   message,"Finished c2p"
-
-  stop
   
   the_end:
+
 end
+
 

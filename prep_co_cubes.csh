@@ -109,7 +109,11 @@ fits in=PAWS.5ks_32bit.LSR.1p4cvl.xyrgd op=xyout out=PAWS.5ks_32bit.LSR.1p4cvl.x
 
     n628:
 
-
+    rm -rf m74co21_12m+7m+TP.K.1p0as m74co21_12m+7m+TP.K.1p0as.xyvrgd m74co21_12m+7m+TP.K.1p0as.xyvrgd.fits
+    convol map=m74co21_12m+7m+TP.K.mir options=final fwhm=1.04 out=m74co21_12m+7m+TP.K.1p0as
+    regrid in=m74co21_12m+7m+TP.K.1p0as axes=1,2,3 out=m74co21_12m+7m+TP.K.1p0as.xyvrgd desc=24.174050,512,-9.0765679e-05,1024,15.783461,512,9.0765679e-05,1024,570.0,0,5.0,30
+    fits in=m74co21_12m+7m+TP.K.1p0as.xyvrgd op=xyout out=m74co21_12m+7m+TP.K.1p0as.xyvrgd.fits
+    
 	goto the_end
 	
     # following is for 13pc pixels, 53 pc resolution (assuming 8.4e5 pc)
