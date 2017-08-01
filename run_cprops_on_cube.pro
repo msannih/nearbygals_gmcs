@@ -111,23 +111,23 @@ for kk=0,use_niter do begin
                       , spec_box=3 $
                       , meannoise=meannoisecube
      
-    get_noise_estimate, cube_file = use_infile+'.fits' $
-                     , out_file = use_infile+'_rms2Di_pmb9s3.fits' $
-                     , mask_file = use_infile+'_mask_10p1p5.fits' $
-                     , /iterate $
-                     , /twod_only $
-                     , box=9 $
-                     , spec_box=3 $
-                     , meannoise=meannoise2D
+    ;; get_noise_estimate, cube_file = use_infile+'.fits' $
+    ;;                  , out_file = use_infile+'_rms2Di_pmb9s3.fits' $
+    ;;                  , mask_file = use_infile+'_mask_10p1p5.fits' $
+    ;;                  , /iterate $
+    ;;                  , /twod_only $
+    ;;                  , box=9 $
+    ;;                  , spec_box=3 $
+    ;;                  , meannoise=meannoise2D
 
-    get_noise_estimate, cube_file = use_infile+'.fits' $
-                     , out_file = use_infile+'_rms0Di_pmb9s3.fits' $
-                     , mask_file = use_infile+'_mask_10p1p5.fits' $
-                     , /iterate $
-                     , /zero_only $
-                     , box=9 $
-                     , spec_box=3 $
-                     , meannoise=meannoise0D
+    ;; get_noise_estimate, cube_file = use_infile+'.fits' $
+    ;;                  , out_file = use_infile+'_rms0Di_pmb9s3.fits' $
+    ;;                  , mask_file = use_infile+'_mask_10p1p5.fits' $
+    ;;                  , /iterate $
+    ;;                  , /zero_only $
+    ;;                  , box=9 $
+    ;;                  , spec_box=3 $
+    ;;                  , meannoise=meannoise0D
 
      if kk eq 0 then $
         use_addnoise=meannoisecube[0]
@@ -148,30 +148,30 @@ for kk=0,use_niter do begin
 ;		    , min_pix = ppbeam $
 		    , /verbose
 
-       make_cprops_mask, infile = use_infile+'.fits' $
-                    , rmsfile = use_infile+'_rms2Di_pmb9s3.fits' $
-		    , outfile = use_infile+'_def_2.fits' $
-		    , hi_thresh = use_core $
-		    , lo_thresh = use_edge $
-                   , hi_nchan = 2 $
-                   , lo_nchan = 2 $
-;		    , min_pix = ppbeam $
-		    , /verbose
+;;        make_cprops_mask, infile = use_infile+'.fits' $
+;;                     , rmsfile = use_infile+'_rms2Di_pmb9s3.fits' $
+;; 		    , outfile = use_infile+'_def_2.fits' $
+;; 		    , hi_thresh = use_core $
+;; 		    , lo_thresh = use_edge $
+;;                    , hi_nchan = 2 $
+;;                    , lo_nchan = 2 $
+;; ;		    , min_pix = ppbeam $
+;; 		    , /verbose
 
-           make_cprops_mask, infile = use_infile+'.fits' $
-                    , rmsfile = use_infile+'_rms0Di_pmb9s3.fits' $
-		    , outfile = use_infile+'_def_3.fits' $
-		    , hi_thresh = use_core $
-		    , lo_thresh = use_edge $
-                   , hi_nchan = 2 $
-                   , lo_nchan = 2 $
-;		    , min_pix = ppbeam $
-		    , /verbose
+;;            make_cprops_mask, infile = use_infile+'.fits' $
+;;                     , rmsfile = use_infile+'_rms0Di_pmb9s3.fits' $
+;; 		    , outfile = use_infile+'_def_3.fits' $
+;; 		    , hi_thresh = use_core $
+;; 		    , lo_thresh = use_edge $
+;;                    , hi_nchan = 2 $
+;;                    , lo_nchan = 2 $
+;; ;		    , min_pix = ppbeam $
+;; 		    , /verbose
 
             m1=readfits(use_infile+'_def_1.fits',h1)
-           m2=readfits(use_infile+'_def_2.fits',h2)
-           m3=readfits(use_infile+'_def_3.fits',h3)
-            m4=m1*m2*m3
+;;           m2=readfits(use_infile+'_def_2.fits',h2)
+;;           m3=readfits(use_infile+'_def_3.fits',h3)
+            m4=m1;;*m2*m3
 
             writefits,use_infile+'_def_signalmask.fits',float(m4),h1
             
