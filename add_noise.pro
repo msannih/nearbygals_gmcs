@@ -114,6 +114,8 @@ pro add_noise $
 
 ; Add normally distributed noise.
 
+  stop
+  
   if n_elements(noise) gt 0 then begin
      this_noise = $
         realize_noise( $

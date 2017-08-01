@@ -66,8 +66,8 @@ end
 ;###################################################################    
 if do_noise gt 0 then begin
 
-   make_noise_cube, cube_file = use_infile+'.fits' $
-                    , out_cube = noisecube $
+   get_noise_estimate, cube_file = use_infile+'.fits' $
+                    , out_file = use_infile+'_2Drms.fits' $
                     , mask_file = use_infile+'_mask_10p1p5.fits' $
                     , /iterate $
                     , /twod_only $
@@ -75,7 +75,7 @@ if do_noise gt 0 then begin
                     , box=9 $
                     , spec_box=3
 
-   writefits,use_infile+'_2Drms.fits', noisecube, twod_head(hdr)
+;   writefits,use_infile+'_2Drms.fits', noisecube, twod_head(hdr)
 
 end
 

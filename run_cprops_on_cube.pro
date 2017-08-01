@@ -66,7 +66,7 @@ pro run_cprops_on_cube, datadir=datadir, file=file, savdir=savdir, namestr=names
 use_addnoise=0
 use_iterstr='' ; blank for original cube
 
-for kk=0,use_niter-1 do begin
+for kk=0,use_niter do begin
    
      use_infile=use_datadir+use_file ; always want to start with the original cube, so need this inside loop
 
@@ -76,7 +76,7 @@ for kk=0,use_niter-1 do begin
         print,'Adding noise: ',use_addnoise
         use_iterstr='_n'+padinteger(kk,use_pad)
         use_outfile=use_infile+use_iterstr
-        
+
         add_noise, in_file= use_infile+'.fits' $
                            , noise=use_addnoise $
                            , out_file=use_outfile+'.fits'
@@ -285,12 +285,9 @@ endif
 
 endfor
 
-
-
   dt = systime(1)-t0  
   print, 'Computational time (min): ', dt/60.
-  
-  message,"Finished c2p"
+  message,"Finished run_cprops_on_cube",/info
   
   the_end:
 
