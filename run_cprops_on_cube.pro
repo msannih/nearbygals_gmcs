@@ -8,7 +8,7 @@ pro run_cprops_on_cube, datadir=datadir, file=file, savdir=savdir, namestr=names
   do_mask = 1
   do_locmax = 1
   do_assign_cp = 1
-  do_clean = 1
+  do_clean = 0
   do_cube2mom = 1
   do_mom2props = 1
 
