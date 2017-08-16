@@ -5,12 +5,12 @@ pro prep_galaxy, datadir=datadir, file=file, outdir=outdir, namestr=namestr $
 ;===== CONTROL FLOW
 ;##################################################################
 
-  do_rebaseline=0 ; rebaseline the cube
-  do_strongmask=0 ; make mask that identifies strongest emission
-  do_noise=0 ; make a 2D map of the noise
-  do_coverage=0 ; make 2D maps showing FoV of survey
-  do_blankedges=0 ; enlarge mask around the edge of the FoV and end channels
-  do_blankrms=0 ; enlarge mask around the edge of the FoV and end channels
+  do_rebaseline=1 ; rebaseline the cube
+  do_strongmask=1 ; make mask that identifies strongest emission
+  do_noise=1 ; make a 2D map of the noise
+  do_coverage=1 ; make 2D maps showing FoV of survey
+  do_blankedges=1 ; enlarge mask around the edge of the FoV and end channels
+  do_blankrms=1 ; enlarge mask around the edge of the FoV and end channels
   do_applyorig=1 ; apply final mask to original (non-rebaselined cube)
   do_fluxreport=0 ; report flux
 
