@@ -7,7 +7,8 @@ pro make_simple_noisemap $
    , out_file = out_file $
    , channels = channels $
    , box=box $
-   , meannoise = meannoise
+   , avgnoise = avgnoise $
+   , median = median
    
 ;+
 ; NAME:
@@ -140,8 +141,9 @@ pro make_simple_noisemap $
 ; WRITE TO DISK
 ; &%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%&%
 
-  ;meannoise=robust_sigma(reduced_cube)
-  meannoise=median(out_map)
+  ;avgnoise=robust_sigma(reduced_cube)
+  avgnoise=mean(out_map,/nan)
+  if keyword_set(median) then avgnoise=median(out_map)
   
   if n_elements(out_file) gt 0 then $
      writefits, out_file, out_map, out_hdr
