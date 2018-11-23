@@ -23,7 +23,11 @@ pro moment_maps,infile=infile $
                 ,nostop=nostop $
                 ,out_mom1=out_mom1 $
                 ,out_hdr_mom1=out_hdr_mom1 $
-                ,namestr=namestr
+                ,out_mom0=out_mom0 $
+                ,out_hdr_mom0=out_hdr_mom0 $
+                ,namestr=namestr $
+                ,auto_rngmsk=auto_rngmsk $
+                ,direct=direct
                 
                 
 ; example
@@ -40,7 +44,7 @@ pro moment_maps,infile=infile $
   use_wait=0.
   use_max_vdisp=10.
   use_fill_blanks=0.
-  use_rngmsk=[0,0]
+  use_rngmsk=[[0,0],[0,0]]
   use_pkmsk=[0,0]
   use_snrmsk=[0,0]
   use_edgeblank=[0,0]
@@ -93,7 +97,13 @@ pro moment_maps,infile=infile $
   if keyword_set(inrms) then rms=readfits(inrms,rhdr)
 
   if keyword_set(inmask) then begin
-     mask=readfits(inmask,mhdr)
+     if size(inmask,/type) eq 7 then begin
+        mask=readfits(inmask,mhdr)
+     end else begin
+        mask=inmask
+     end
+     
+     
      is_3dmask=size(mask,/n_dim) eq 3
      is_2dmask=size(mask,/n_dim) eq 2
 
@@ -126,19 +136,35 @@ pro moment_maps,infile=infile $
   end
 
   if keyword_set(vrange) then begin
-     goodchans=where(vaxis gt use_vrange[0] and vaxis lt use_vrange[1], goodct,comp=badchans,ncomp=badct)
+     goodchans=where(vaxis gt vrange[0] and vaxis lt vrange[1], goodct,comp=badchans,ncomp=badct)
      if badct gt 0 then data[*,*,[badchans]]=!values.f_nan
      v_llim=vrange[0] & v_ulim=vrange[1]
   end
+
+  if keyword_set(auto_rngmsk) then begin
+     chanflux=total(total(data,1,/nan),1,/nan)
+     cumflux=total(chanflux,/cum,/nan)
+     totflux=total(data,/nan)
+     pcumflux=cumflux/totflux
+     goodchans=where(pcumflux ge 0.01 and pcumflux le 0.99, goodct,comp=badchans,ncomp=badct)
+     if badct gt 0 then data[*,*,[badchans]]=!values.f_nan
+     if vaxis[0] lt vaxis[-1] then begin
+        v_llim=vaxis[goodchans[0]] & v_ulim=vaxis[goodchans[-1]]
+     end else if vaxis[0] gt vaxis[-1] then begin
+        v_llim=vaxis[goodchans[-1]] & v_ulim=vaxis[goodchans[0]]
+     end
+  end
+  
 
   if keyword_set(inmask) and is_3dmask eq 1 then begin
      badpix=where(mask eq 0 or finite(mask) eq 0,badct)
      if badct gt 0 then data[badpix]=!values.f_nan	
   end
+
   
 ; calculation
   sum=total(data,3,/nan)
-  pk=max(data,vpkidx,dim=3,/nan)
+  pk=max(data_nomask,vpkidx,dim=3,/nan)
   vpk=pk*0.0
   for kk=0,naxis1-1 do begin
      ijm=index2ij(reform(vpkidx[kk,*]),[naxis1,naxis2,nchans])
@@ -160,7 +186,7 @@ pro moment_maps,infile=infile $
      3: rms2d=reform(mean(rms,dim=3,/nan))
      else: begin
      ;rms2d=sum*0.0+robust_sigma([data_nomask[*,*,[0:2]],data_nomask[*,*,[-3:-1]]])
-        make_simple_noisemap, cube_in=data $
+        make_simple_noisemap, cube_in=data_nomask $
                               ,  out_map=rms2d $
                               , channels=[2,2] $
                               , box=3 $
@@ -207,7 +233,21 @@ end
   
   
   ; range mask
-  if keyword_set(use_rngmsk[0]) then begin
+  if keyword_set(use_rngmsk[0]) and keyword_set(use_rngmsk[1]) then begin
+     v_llim=use_rngmsk[0]  &    v_ulim=use_rngmsk[1]
+     badpix=where(mom1 lt v_llim or mom1 gt v_ulim,badct)
+     if badct gt 0 then begin
+        mmom0[badpix]=!values.f_nan
+        mom1[badpix]=!values.f_nan
+        mom2[badpix]=!values.f_nan
+        eqw[badpix]=!values.f_nan
+        meqw[badpix]=!values.f_nan
+        vpk[badpix]=!values.f_nan
+     end
+  end
+
+    ; autorange mask
+  if keyword_set(auto_rngmsk) then begin
      badpix=where(mom1 lt v_llim or mom1 gt v_ulim,badct)
      if badct gt 0 then begin
         mmom0[badpix]=!values.f_nan
@@ -433,6 +473,7 @@ end
 
   end
   
+  
 
 ; Shuffled moment maps
   
@@ -509,14 +550,14 @@ end
    end
      
      ; range mask
-     if keyword_set(use_rngmsk[1]) then begin
-        badpix=where(mom1 lt v_llim or mom1 gt v_ulim,badct) 
-        if badct gt 0 then begin
-           smmom0[badpix]=!values.f_nan
-           smom1[badpix]=!values.f_nan
-           smom2[badpix]=!values.f_nan
-        end
+  if keyword_set(use_rngmsk[2]) and keyword_set(use_rngmsk[3]) then begin
+     v_llim=rngmask[2]  &    v_ulim=rngmask[3]
+     if badct gt 0 then begin
+        smmom0[badpix]=!values.f_nan
+        smom1[badpix]=!values.f_nan
+        smom2[badpix]=!values.f_nan
      end
+  end
      
      ; peak brightness mask
      if keyword_set(use_pkmsk[1]) then begin
@@ -548,7 +589,8 @@ end
         smom1[badpix]=!values.f_nan
         smom2[badpix]=!values.f_nan
      end
-  end
+     end
+     
 
 
      print,'Total flux in cube [K.km/s.as2] is: ',total(mom0,/nan)*abs(cdelt1_as)*abs(cdelt2_as)
@@ -663,6 +705,9 @@ end
 
   if keyword_set(out_mom1) then begin
      out_mom1=mom1
+  end
+if keyword_set(out_mom0) then begin
+     out_mom0=mom0
   end
 
   if not keyword_set(nostop) then stop
