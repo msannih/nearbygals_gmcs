@@ -5,7 +5,7 @@ pro rebaseline_galaxy, file=file, order=order, outfile=outfile
   if keyword_set(file) then use_file=file
   use_outfile=use_file+'_robbl'
   if keyword_set(outfile) then use_outfile=outfile
-  if keyword_set(order) then use_order=order
+  if defined(order) then use_order=order
 
 ;  make a mask of strong signal
   
