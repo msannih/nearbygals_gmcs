@@ -1,4 +1,4 @@
-pro prep_galaxy, file,datadir=datadir, outdir=outdir, namestr=namestr $
+pro prep_galaxy, use_file,datadir=datadir, outdir=outdir, namestr=namestr $
                         , galaxy=galaxy, enlargemask=enlargemask, rmsfactor=rmsfactor
 
 
