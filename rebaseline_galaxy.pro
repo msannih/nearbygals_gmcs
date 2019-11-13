@@ -26,7 +26,7 @@ pro rebaseline_galaxy, file=file, order=order, outfile=outfile
 
 
   data_in=readfits(use_file+'.fits',hdr_in)
-  data_out=readfits(use_file+'_robbl.fits',hdr_out)
+  data_out=readfits(use_outfile+'.fits',hdr_out)
 
   flux_in=total(data_in,/nan)
   flux_out=total(data_out,/nan)
