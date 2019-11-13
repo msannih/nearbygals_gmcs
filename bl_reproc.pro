@@ -49,6 +49,7 @@ pro BL_REPROC, fits_in=fits_in, $
   
 print, "=================================================================="
 print, "||             BL_REPROC: Rebaselining CUBE	     	        ||" 
+print, "||             Requested ORDER:"+strtrim(string(order),2)+"   	        ||" 
 print, "=================================================================="
 
 ;---------------- SOME DEFINITIONS  --------------------------
