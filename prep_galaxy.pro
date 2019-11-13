@@ -12,7 +12,7 @@ pro prep_galaxy, datadir=datadir, file=file, outdir=outdir, namestr=namestr $
   do_blankedges=1 ; enlarge mask around the edge of the FoV and end channels
   do_blankrms=1 ; enlarge mask around the edge of the FoV and end channels
   do_applyorig=1 ; apply final mask to original (non-rebaselined cube)
-  do_fluxreport=0 ; report flux
+  do_fluxreport=1 ; report flux
 
   
 ;=== defaults
@@ -185,8 +185,16 @@ end
 ;=== report the flux in the cubes if requested  
 ;###################################################################    
   if do_fluxreport gt 0 then begin
+
+     cube=readfits(use_infile+'.fits',h)
+     mcube=readfits(use_infile+'_finalFoV.fits',hm)
+
      flux=total(cube,/nan)*pix2pc*pix2pc*chanw
      print,use_file+' flux:',flux
+
+     flux=total(mcube,/nan)*pix2pc*pix2pc*chanw
+     print,use_file+' flux (after masking edges and discrepant pixels):',flux
+
   end
 
 
