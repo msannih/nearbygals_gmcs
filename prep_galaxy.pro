@@ -34,7 +34,7 @@ pro prep_galaxy, file,datadir=datadir, outdir=outdir, namestr=namestr $
   if keyword_set(enlargemask) then use_enlargemask=enlargemask
   if keyword_set(rmsfactor) then use_rmsfactor=rmsfactor
 
-  use_filename_root=use_infile
+  use_filename_root=use_file
   use_outfile=use_outdir+use_filename_root
   if keyword_set(namestr) then use_outfile=use_outdir+'/'+use_namestr
   use_infile=use_datadir+'/'+use_file
@@ -50,8 +50,10 @@ pro prep_galaxy, file,datadir=datadir, outdir=outdir, namestr=namestr $
 
 ;=== rebaseline 
 ;###################################################################    
-if do_rebaseline gt 0 then $
+if do_rebaseline gt 0 then begin
     rebaseline_galaxy,file=use_infile,order=use_order,outfile=use_outfile+'_robbl'
+    use_infile=use_outfile+'_robbl'
+ end
 
 stop
 
