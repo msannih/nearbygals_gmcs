@@ -1,8 +1,10 @@
-pro rebaseline_galaxy, file=file, order=order
+pro rebaseline_galaxy, file=file, order=order, outfile=outfile
 
   use_order=1
   
   if keyword_set(file) then use_file=file
+  use_outfile=use_file+'_robbl'
+  if keyword_set(outfile) then use_outfile=outfile
   if keyword_set(order) then use_order=order
 
 ;  make a mask of strong signal
@@ -20,7 +22,7 @@ pro rebaseline_galaxy, file=file, order=order
   bl_reproc,fits_in=use_file+'.fits' $
             ,mask_fits=use_file+'_mask_10p1p5.fits'$
             ,order=use_order,/robust $
-            ,fits_out=use_file+'_robbl'
+            ,fits_out=use_outfile
 
 
   data_in=readfits(use_file+'.fits',hdr_in)
@@ -30,6 +32,8 @@ pro rebaseline_galaxy, file=file, order=order
   flux_out=total(data_out,/nan)
 
   print,'Flux in/out: ',flux_in,flux_out,flux_in/flux_out
+
+  stop
   
 the_end:
   
