@@ -21,7 +21,7 @@ pro prep_galaxy, use_file,datadir=datadir, outdir=outdir, namestr=namestr $
   win=0L
   use_enlargemask=[1,1]
   use_rmsfactor=3
-  use_order=1
+  use_order=0 ;; i.e. fit linear offset to baseline
   use_outdir='./'
   use_datadir='./'
   use_galaxy='galaxy' ; this shouldn't work
