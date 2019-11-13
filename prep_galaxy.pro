@@ -1,4 +1,4 @@
-pro prep_galaxy, datadir=datadir, file=file, outdir=outdir, namestr=namestr $
+pro prep_galaxy, file,datadir=datadir, outdir=outdir, namestr=namestr $
                         , galaxy=galaxy, enlargemask=enlargemask, rmsfactor=rmsfactor
 
 
@@ -19,20 +19,25 @@ pro prep_galaxy, datadir=datadir, file=file, outdir=outdir, namestr=namestr $
   ms2kms=1/1000.d
   kms2ms=1000.d
   win=0L
-  use_enlargemask=[5,2]
+  use_enlargemask=[1,1]
   use_rmsfactor=3
   use_order=1
+  use_outdir='./'
+  use_datadir='./'
+  use_galaxy='galaxy' ; this shouldn't work
   
-  ; process user inputs
+; process user inputs
   if keyword_set(datadir) then use_datadir=datadir
   if keyword_set(outdir) then use_outdir=outdir
-  if keyword_set(file) then use_file=file
   if keyword_set(namestr) then use_namestr=namestr
   if keyword_set(galaxy) then use_galaxy=galaxy
   if keyword_set(enlargemask) then use_enlargemask=enlargemask
   if keyword_set(rmsfactor) then use_rmsfactor=rmsfactor
 
-  use_infile=use_datadir+use_file
+  use_filename_root=use_infile
+  use_outfile=use_outdir+use_filename_root
+  if keyword_set(namestr) then use_outfile=use_outdir+'/'+use_namestr
+  use_infile=use_datadir+'/'+use_file
   
 ; get galaxy parameters
   gstr=gal_data(use_galaxy)
@@ -46,7 +51,9 @@ pro prep_galaxy, datadir=datadir, file=file, outdir=outdir, namestr=namestr $
 ;=== rebaseline 
 ;###################################################################    
 if do_rebaseline gt 0 then $
-    rebaseline_galaxy,file=use_infile,order=use_order
+    rebaseline_galaxy,file=use_infile,order=use_order,outfile=use_outfile+'_robbl'
+
+stop
 
 ;=== mask of strongest signal 
 ;###################################################################    
