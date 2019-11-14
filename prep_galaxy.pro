@@ -38,7 +38,8 @@ pro prep_galaxy, use_file,datadir=datadir, outdir=outdir, namestr=namestr $
   use_outfile=use_outdir+use_filename_root
   if keyword_set(namestr) then use_outfile=use_outdir+'/'+use_namestr
   use_infile=use_datadir+'/'+use_file
-  
+  use_origfile=use_infile
+
 ; get galaxy parameters
   gstr=gal_data(use_galaxy)
   galdist=1e6*gstr.dist_mpc
@@ -52,10 +53,9 @@ pro prep_galaxy, use_file,datadir=datadir, outdir=outdir, namestr=namestr $
 ;###################################################################    
 if do_rebaseline gt 0 then begin
     rebaseline_galaxy,file=use_infile,order=use_order,outfile=use_outfile+'_robbl'
+    use_origfile=use_infile
     use_infile=use_outfile+'_robbl'
  end
-
-stop
 
 ;=== mask of strongest signal 
 ;###################################################################    
@@ -118,13 +118,14 @@ end
   if do_blankedges gt 0 then begin
 
      m0=readfits(use_infile+'_notobserved.fits',h0)
-     data_bl=readfits(use_infile+'_robbl.fits',hdr)
+     data_bl=readfits(use_infile+'.fits',hdr)
      rmsmap=readfits(use_infile+'_2Drms.fits',nhd)
      
      mcube=data_bl*0. & hm=hdr
 
      avgrms=median(rmsmap)
-
+     message,'Avg rms is: '+strtrim(string(avgrms),2),/info
+     
      ;expand in (x,y)
      n0dim=size(m0,/dim)
      badregion=where(m0 eq 1)
@@ -195,11 +196,15 @@ end
 ;###################################################################    
   if do_fluxreport gt 0 then begin
 
-     cube=readfits(use_infile+'.fits',h)
+     ocube=readfits(use_origfile+'.fits',h)
      mcube=readfits(use_infile+'_finalFoV.fits',hm)
+     cube=readfits(use_infile+'.fits',h)
+
+    flux=total(ocube,/nan)*pix2pc*pix2pc*chanw
+     print,use_file+' flux (original):',flux
 
      flux=total(cube,/nan)*pix2pc*pix2pc*chanw
-     print,use_file+' flux:',flux
+     print,use_file+' flux (after baselineing):',flux
 
      flux=total(mcube,/nan)*pix2pc*pix2pc*chanw
      print,use_file+' flux (after masking edges and discrepant pixels):',flux

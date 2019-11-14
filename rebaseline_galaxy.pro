@@ -32,8 +32,6 @@ pro rebaseline_galaxy, file=file, order=order, outfile=outfile
   flux_out=total(data_out,/nan)
 
   print,'Flux in/out: ',flux_in,flux_out,flux_in/flux_out
-
-  stop
   
 the_end:
   
